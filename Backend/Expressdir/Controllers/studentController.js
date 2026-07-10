@@ -4,6 +4,7 @@ const getStudents=async(req,res)=>{
         // const filter ={
            
         // };
+        //Filtering 
         const filter={ } ;
         console.log(filter);
         //filter by course,gender,semester 
@@ -30,9 +31,53 @@ const getStudents=async(req,res)=>{
         //     filter.name=new RegExp(req.query.search,"i");
         // }
         //
-        const students=await Student.find(filter);
+        //Sorting
+        let sort={};
+        if(req.query.sort){
+          if(req.query.sort.startsWith("-")){
+            let field=req.query.sort.substring(1) ;
+            sort[field]=-1 ;
+          }
+          else{
+            sort[req.query.sort]=1 ;
+          }
+        }
+
+        //pagination
+        const page=parseInt(req.query.page)||1 ;
+        const limit=parseInt(req.query.limit)||5;
+        const skip=(page -1)*limit ;
+        if(page <1 || limit<1){
+            return res.status(400).json({
+                message:"Page and limit must be greater than 0"
+            })
+        }
+       const totalStudents=await Student.countDocuments(filter) ;
+
+      
+
+       //Projection(Field selection)
+
+       let select ="";
+      if (req.query.fields) {
+    select = req.query.fields.split(",").join(" ");
+}
         
-        res.json(students);
+        const students=await Student.find(filter).select(select).sort(sort).skip(skip).limit(limit) ;
+
+        const totalPages = Math.ceil(totalStudents / limit);
+        if (page > totalPages && totalStudents > 0) {
+    return res.status(404).json({
+        message: "Page not found"
+    });
+  }
+   
+        res.json({
+            totalStudents,
+            totalPages,
+            currentPage:page,
+            students
+        });
       }
       catch(err){
         res.status(500).json({
@@ -111,7 +156,6 @@ const deleteStudent = async(req,res)=>{
 module.exports={
     getStudents ,
     getStudentById ,
-   
     createStudent ,
     updateStudent ,
     deleteStudent
