@@ -6,6 +6,9 @@ const getStudents=async(req,res)=>{
         // };
         //Filtering 
         const filter={ } ;
+        if(req.user.role !="admin"){
+            filter.user=req.user.id ;
+        }
         console.log(filter);
         //filter by course,gender,semester 
         if(req.query.course){
@@ -62,7 +65,8 @@ const getStudents=async(req,res)=>{
       if (req.query.fields) {
     select = req.query.fields.split(",").join(" ");
 }
-        
+        console.log(req.user);
+          console.log(filter);
         const students=await Student.find(filter).select(select).sort(sort).skip(skip).limit(limit) ;
 
         const totalPages = Math.ceil(totalStudents / limit);
@@ -106,7 +110,10 @@ try{
 
 const createStudent=async(req,res)=>{
     try{
-        const student=await Student.create(req.body);
+        const student=await Student.create({
+          ...req.body ,
+          user:req.user.id  
+        });
         res.status(201).json(student);
     }
     catch(err){

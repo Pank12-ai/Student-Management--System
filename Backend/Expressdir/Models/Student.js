@@ -10,7 +10,7 @@ const studentSchema = new mongoose.Schema({
    Age:{
       type:Number ,
       required:[true,"Age is required"],
-      min:[14,"Age cannot be less tha 14"]
+      min:[14,"Age cannot be less than 22"]
    },
    rollNo: {
       type:Number,
@@ -51,6 +51,10 @@ const studentSchema = new mongoose.Schema({
       lowercase:true ,
       match:[/^\S+@\S+\.\S+$/,"Invalid email format"]
 
+   },
+   user:{
+      type:mongoose.Schema.Types.ObjectId ,
+      ref:"User" 
    }
 
 });
