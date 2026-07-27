@@ -112,6 +112,12 @@ Frontend/ *(In Progress)*
 - Password Reset
 
 ---
+### Frontend
+
+- Student CRUD Interface
+- React Components
+- API Integration
+- Responsive UI
 
 ## 👨‍💻 Author
 
