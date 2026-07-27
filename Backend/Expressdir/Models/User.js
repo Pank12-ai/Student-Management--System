@@ -2,7 +2,7 @@ const mongoose=require("mongoose");
 const userSchema=new mongoose.Schema({
     name:{
         type:String,
-        required:true,
+        required:true
         
     },
     email:{
@@ -15,7 +15,7 @@ const userSchema=new mongoose.Schema({
     password:{
         type:String ,
         required:true ,
-        minLength:[6,"Password must be atleast 6 characters"],
+        minLength:[6,"Password must be atleast 6 characters"]
        
     },
     role:{
@@ -26,9 +26,7 @@ const userSchema=new mongoose.Schema({
             message:"role must be admin or user"
         }
      },
-     name:{
-        
-     }
+    
     }
 )
 module.exports = mongoose.model("User", userSchema);

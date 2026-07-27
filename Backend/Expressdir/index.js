@@ -1,14 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors=require("cors");
 
-const studentRoutes = require("./routes/StudentRoutes");
+const studentRoutes = require("./Routes/StudentRoutes");
 const authRoutes=require("./Routes/authRoutes");
 
 
 const app = express();
-app.use(express.json());
-app.use("/api/auth",authRoutes);
 
+
+
+//Middleware
+app.use(cors({
+    origin:"http://localhost:5173"
+}))
+app.use(express.json());
+//routes
+app.use("/api/auth",authRoutes);
+app.use("/api/students",studentRoutes);
 
 mongoose.connect(
    "mongodb://127.0.0.1:27017/studentdb"
@@ -17,10 +26,10 @@ mongoose.connect(
    console.log("mongodb connected");
 })
 .catch((err)=>{
-    console.log(err);
+   console.log("Status:", err.response?.status);
+    console.log("Data:", err.response?.data);
 })
 
-app.use("/api/students", studentRoutes);
 
 app.listen(3000,()=>{
     console.log( "Server running on port 3000" );

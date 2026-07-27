@@ -32,6 +32,8 @@ const register=async(req,res)=>{
 };
 
 const login=async(req,res)=>{
+    console.log("login api hit")
+    console.log(req.body);
     try{
         //email se user dhundho
         const user=await User.findOne({email:req.body.email});
