@@ -2,7 +2,8 @@ const express=require("express");
 const router=express.Router();
 const {
     getStudents,
-    getStudentById,    
+    getStudentById,
+    getMe ,    
     createStudent,
     updateStudent,
     deleteStudent,
@@ -13,9 +14,11 @@ const authorize = require("../Middleware/roleMiddleware");
 
 router.get("/",auth,getStudents);
 router.get("/:id",auth,getStudentById);
+router.get("/me",auth,getMe);
 router.post("/",auth,createStudent);
 router.put("/:id",auth,updateStudent);
 router.delete("/:id",auth,deleteStudent);
 router.delete("/:id",auth,authorize("admin"),deleteStudent);
+
 
 module.exports=router ;

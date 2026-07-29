@@ -31,11 +31,12 @@ const getStudents=async(req,res)=>{
                 filter.age.$lte=parseInt(req.query.maxAge)
             }
         }
-        // //search by name using regex
-        // if(req.query.search){
-        //     filter.name=new RegExp(req.query.search,"i");
-        // }
-        //
+        //search by name using regex
+        if(req.query.search){
+            filter.name=new RegExp(req.query.search,"i");
+        }
+    
+        
         //Sorting
         let sort={};
         if(req.query.sort){
@@ -108,8 +109,11 @@ try{
  });
  }
 };
-
-
+//controller 
+const getMe =async(req,res)=>{
+    const user=await User.findById(req.user.id).select("-password");
+    res.json(user);
+}
 const createStudent = async (req, res) => {
     try {
 
@@ -199,6 +203,7 @@ const deleteStudent = async(req,res)=>{
 };
 
 module.exports={
+    getMe ,
     getStudents ,
     getStudentById ,
     createStudent ,
