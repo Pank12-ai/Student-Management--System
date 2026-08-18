@@ -93,6 +93,52 @@ const getStudents=async(req,res)=>{
       }
 
 }
+
+const updateMyStudent = async (req, res) => {
+    try {
+
+        // Sirf allowed fields
+        const allowedFields = [
+            "age",
+            "gender",
+            "course",
+            "semester"
+        ];
+
+        const updateData = {};
+
+        for (const field of allowedFields) {
+            if (req.body[field] !== undefined) {
+                updateData[field] = req.body[field];
+            }
+        }
+
+        const student = await Student.findOneAndUpdate(
+            { user: req.user.id },
+            updateData,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!student) {
+            return res.status(404).json({
+                message: "Student profile not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            student
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
+};
 const getStudentById=async(req,res)=>{
 try{
         const student=await Student.findById(req.params.id);
@@ -109,54 +155,16 @@ try{
  });
  }
 };
-//controller 
-const getMe =async(req,res)=>{
-    const user=await User.findById(req.user.id).select("-password");
-    res.json(user);
-}
-const createStudent = async (req, res) => {
-    try {
 
-        // Default password
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-        // User create
-        const user = await User.create({
-            name:req.body.name ,
-            email: req.body.email,
-            password: hashedPassword,
-            role: "user"
-        });
+const getMyStudent = async (req, res) => {
+    const student = await Student.findOne({
+        user: req.user.id
+    }).populate("user", "-password");
 
-        // password ko req.body se hata do
-      const { password, ...studentData } = req.body;
-        // Student create
-        const student = await Student.create({
-            ...studentData,
-            user: user._id
-        });
-
-        res.status(201).json({
-            message: "Student created successfully",
-            student
-        });
-
-    } catch (err) {
-
-    console.log("Error Code:", err.code);
-    console.log("Duplicate Key:", err.keyValue);
-
-    if (err.code === 11000) {
-        return res.status(400).json({
-            duplicate: err.keyValue
-        });
-    }
-
-    res.status(500).json({
-        message: err.message
-    });
-}
+    res.json(student);
 };
+
      
 const updateStudent=async(req,res)=>{
     try{
@@ -203,10 +211,10 @@ const deleteStudent = async(req,res)=>{
 };
 
 module.exports={
-    getMe ,
+    getMyStudent ,
+    updateMyStudent ,
     getStudents ,
     getStudentById ,
-    createStudent ,
     updateStudent ,
     deleteStudent
 
