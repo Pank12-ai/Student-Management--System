@@ -21,12 +21,12 @@ const userSchema=new mongoose.Schema({
     role:{
         type:String ,
         enum:{
-            values:["admin","user"],
-            default:"user",
-            message:"role must be admin or user"
+            values:["admin","student"],
+            default:"student",
+            message:"role must be admin or student"
         }
      },
     
     }
 )
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("student", userSchema);
