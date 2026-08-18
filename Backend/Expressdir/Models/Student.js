@@ -10,7 +10,7 @@ const studentSchema = new mongoose.Schema({
    Age:{
       type:Number ,
       required:[true,"Age is required"],
-      min:[14,"Age cannot be less than 22"]
+      min:[22,"Age cannot be less than 22"]
    },
    rollNo: {
       type:Number,
